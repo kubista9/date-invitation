@@ -1,0 +1,9 @@
+{
+  "name": "date-invitation",
+  "version": "0.1.0",
+  "description": "Interviews you page by page, then builds and deploys a playful, personal date-invitation website (growing Yes button, plan builder, calendar file).",
+  "license": "MIT",
+  "author": {
+    "name": "Jakub Kuka"
+  }
+}

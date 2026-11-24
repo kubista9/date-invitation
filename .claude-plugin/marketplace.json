@@ -1,0 +1,11 @@
+{
+  "name": "date-invitation",
+  "owner": { "name": "Jakub Kuka" },
+  "plugins": [
+    {
+      "name": "date-invitation",
+      "source": "./",
+      "description": "Interviews you page by page, then builds and deploys a playful, personal date-invitation website (growing Yes button, plan builder, calendar file)."
+    }
+  ]
+}

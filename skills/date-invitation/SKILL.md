@@ -20,13 +20,9 @@ Rules:
 **No GIFs ship with the template.** Every GIF slot starts as a visible box that reads "Placeholder for your GIF". The GIF question comes **last** (step 9). Remind the user, at every point listed under "Keep reminding", that they can film their own clips.
 
 1. **Opening ticket.** Ask: who is the invitation for (their name)?
-2. **Skin.** Ask which look they want (AskUserQuestion, four options) and set `theme`:
-   - `blush`: romantic pink, good all year (the default)
-   - `christmas`: pine green, cranberry and cream
-   - `valentine`: rose and crimson
-   - `midnight`: deep navy with gold, a dark skin that suits evening dates
+2. **Skin.** Do not ask. Always use the default `theme: "blush"` (romantic pink). Change it only if the user asks for another skin on their own (`christmas`, `valentine` or `midnight`).
 3. **Question page.** Ask: keep the 10 default "No" messages or write their own? ("No" grows the Yes button, then after the last message the sad page opens.) Also the sad page text; default: "So you don't want to go on a date with me?". It has a "Try again 🥺" button back to the question.
-4. **Yes page.** Ask which celebration effect (`effect`): `confetti`, `hearts`, `stars`, `balloons`, `snow` or `roses`. Suggest one that matches the skin (`christmas` snow, `valentine` roses or hearts, `midnight` stars, `blush` confetti or hearts).
+4. **Yes page.** Ask which celebration effect (`effect`): `confetti`, `hearts`, `stars`, `balloons`, `snow` or `roses`. With the pink skin, suggest `confetti` (the default) or `hearts`.
 5. **Dates.** First ask: **how many dates do you want to offer?** Then go date by date (date 1, then date 2, ...), asking one thing at a time:
    1. **Day and time.** In their own words ("Saturday evening", "the 28th at 19:00"). Today's date is known, so turn it into a real date and time and read it back. A date with **no time** means "time to be decided" (no calendar file): ask which part of the day it is (morning, afternoon or evening) and set `period`.
    2. **Where** this date takes place (`location` on that slot). Each date gets its own answer; never ask for one "default place" for all of them. If they don't know yet, leave it out.

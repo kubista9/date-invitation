@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.env
+giphy-env.js
+giphy-report.json

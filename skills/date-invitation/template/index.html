@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>A little invitation</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="giphy/giphy.css">
+</head>
+<body>
+<main>
+  <!-- 1. Ticket -->
+  <section class="card ticket" data-step="open">
+    <p class="label">A little invitation</p>
+    <h1 data-title></h1>
+    <p class="sub">A little plan.</p>
+    <div class="dash"><span class="notch l"></span><span class="notch r"></span></div>
+    <figure class="pic" data-img="open"></figure>
+    <button class="btn primary" data-go="ask">Open your invitation</button>
+  </section>
+
+  <!-- 2. Question -->
+  <section class="card" data-step="ask" hidden>
+    <h2 data-title></h2>
+    <figure class="pic" data-img="ask"></figure>
+    <p class="msg" id="noMsg" aria-live="polite"></p>
+    <div class="yesno">
+      <button class="btn primary" id="yes">Yes</button>
+      <button class="btn ghost" id="no">No</button>
+    </div>
+  </section>
+
+  <section class="card" data-step="sad" hidden>
+    <figure class="pic" data-img="sad"></figure>
+    <h2 id="sadText"></h2>
+    <button class="btn primary" id="tryAgain">Try again 🥺</button>
+  </section>
+
+  <!-- 3. Yes -->
+  <section class="card" data-step="happy" hidden>
+    <figure class="pic" data-img="happy"></figure>
+    <h2>It’s a date! Let’s make a little plan.</h2>
+    <button class="btn primary" data-go="date">Let’s plan it</button>
+  </section>
+
+  <!-- Plan -->
+  <section class="card" data-step="date" hidden>
+    <p class="label" data-n></p>
+    <h2>When works for you?</h2>
+    <div class="opts" id="slots" role="radiogroup" aria-label="Date and time"></div>
+    <p class="err" id="dateErr" role="alert"></p>
+    <div class="nav"><button class="btn ghost" data-go="happy">Back</button><button class="btn primary" id="dateNext">Next</button></div>
+  </section>
+
+  <section class="card" data-step="food" hidden>
+    <p class="label" data-n></p>
+    <h2>Food &amp; drinks?</h2>
+    <p class="sub">Pick as many as you like.</p>
+    <div class="grp"><h3>Food</h3><div class="opts chips" id="food"></div></div>
+    <div class="grp"><h3>Drinks</h3><div class="opts chips" id="drinks"></div></div>
+    <div class="nav"><button class="btn ghost" data-go="date">Back</button><button class="btn primary" id="foodNext">Next</button></div>
+  </section>
+
+  <section class="card" data-step="activity" hidden>
+    <p class="label" data-n></p>
+    <h2>What shall we do?</h2>
+    <div class="opts" id="acts" role="radiogroup" aria-label="Activity"></div>
+    <p class="err" id="actErr" role="alert"></p>
+    <div class="nav"><button class="btn ghost" data-go="food">Back</button><button class="btn primary" id="actNext">Next</button></div>
+  </section>
+
+  <section class="card" data-step="note" hidden>
+    <p class="label" data-n></p>
+    <h2>Hurray! 🎉</h2>
+    <figure class="pic" data-img="note"></figure>
+    <label class="field">Anything you’d like me to know? (optional)
+      <textarea id="note" rows="4" maxlength="1000"></textarea>
+    </label>
+    <div class="nav"><button class="btn ghost" id="noteBack">Back</button><button class="btn primary" id="toReview">Review</button></div>
+  </section>
+
+  <!-- Review + success -->
+  <section class="card" data-step="review" hidden>
+    <h2>Does this look right?</h2>
+    <dl class="sum" id="reviewList"></dl>
+    <p class="err" id="sendErr" role="alert"></p>
+    <div class="nav"><button class="btn ghost" data-go="note">Edit</button><button class="btn primary" id="send">Send my answer</button></div>
+  </section>
+
+  <section class="card" data-step="success" hidden>
+    <figure class="pic" data-img="success"></figure>
+    <h2>Your answer is on its way. I’m looking forward to it!</h2>
+    <dl class="sum" id="finalList"></dl>
+    <a class="btn primary" id="ics" hidden>Add to calendar (.ics)</a>
+  </section>
+</main>
+<div id="confetti" aria-hidden="true"></div>
+<script src="giphy-env.js"></script>
+<script src="giphy/giphy-core.js"></script>
+<script src="giphy/giphy-attribution.js"></script>
+<script src="giphy/giphy-fallback.js"></script>
+<script src="giphy/giphy-gif.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

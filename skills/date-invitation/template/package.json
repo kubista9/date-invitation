@@ -1,0 +1,13 @@
+{
+  "name": "date-invitation-site",
+  "private": true,
+  "description": "Static date-invitation website. No dependencies.",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "env": "node scripts/build.mjs --env-only",
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/selftest.mjs",
+    "check:giphy": "node scripts/check-giphy-ids.mjs",
+    "giphy-id": "node scripts/giphy-id.mjs"
+  }
+}

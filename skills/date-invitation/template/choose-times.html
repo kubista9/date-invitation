@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Choose your dates</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  main{display:block;max-width:560px;margin:0 auto}
+  .card{margin-bottom:16px;text-align:left}
+  .card h2{font-size:1.1rem;margin-top:0}
+  .days{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;margin:10px 0}
+  .day{border:1.5px solid var(--line);border-radius:14px;background:var(--cream);color:var(--plum);padding:.5em .3em;cursor:pointer;font:inherit;font-size:.85rem;line-height:1.25}
+  .day b{display:block;font-size:1.05rem}
+  .day[aria-pressed=true]{background:var(--pink);border-color:var(--pink);color:#fff}
+  .day:focus-visible,select:focus-visible{outline:3px solid var(--plum);outline-offset:2px}
+  select{width:100%;margin-top:6px;font:inherit;padding:.6em;border-radius:14px;border:1.5px solid var(--line);background:var(--cream);color:inherit}
+  .row{border-top:1px dashed var(--line);padding-top:12px;margin-top:12px}
+  .row h3{margin:0 0 6px;font-size:1rem}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+  .chips .btn{min-height:36px;padding:.35em .9em;font-size:.85rem}
+  .inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+  .inline input[type=time]{width:auto}
+  #out{width:100%;height:220px;font:12px/1.4 ui-monospace,monospace;border:1.5px solid var(--line);border-radius:14px;padding:.7em;background:var(--cream)}
+</style>
+</head>
+<body>
+<main>
+  <section class="card">
+    <h1 style="font-size:1.5rem">Choose your dates</h1>
+    <p class="sub">Tap the days you want to offer. For each day set a time, where you'll meet, what you could do, and a note if you like. Then copy the result for your agent. Your timezone is taken from your computer. Nothing is saved or sent from this page.</p>
+  </section>
+
+  <section class="card">
+    <h2>1. Days</h2>
+    <div class="days" id="days" role="group" aria-label="Days to offer"></div>
+    <button class="btn ghost" id="more" type="button">Show more weeks</button>
+  </section>
+
+  <section class="card" id="rowsCard" hidden>
+    <h2>2. Time, place, activities and note for each day</h2>
+    <div id="rows"></div>
+  </section>
+
+  <section class="card">
+    <h2>3. Your choices</h2>
+    <p class="err" id="msg" role="status"></p>
+    <textarea id="out" readonly aria-label="Your choices as JSON"></textarea>
+    <button class="btn ghost" id="copy" type="button" style="margin-top:8px">Copy</button>
+  </section>
+</main>
+<script src="choose-times-core.js"></script>
+<script>
+  const $ = (s) => document.querySelector(s), pad = (n) => String(n).padStart(2, "0");
+  const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const picked = new Map(); // date -> { time, tbd, period, note, location }, filled as you type
+  let shown = 0;
+  const el = (tag, props = {}, ...kids) => { const e = Object.assign(document.createElement(tag), props); kids.forEach((k) => e.append(k)); return e; };
+
+  const label = (date) => new Intl.DateTimeFormat(undefined, { weekday: "long", day: "numeric", month: "long" }).format(new Date(date + "T12:00:00"));
+
+  function addWeeks(n) {
+    const t = new Date();
+    for (let i = 0; i < n * 7; i++) {
+      const d = new Date(t.getFullYear(), t.getMonth(), t.getDate() + shown + i), key = ymd(d);
+      const b = el("button", { className: "day", type: "button" },
+        new Intl.DateTimeFormat(undefined, { weekday: "short" }).format(d), el("b", { textContent: d.getDate() }),
+        new Intl.DateTimeFormat(undefined, { month: "short" }).format(d));
+      b.setAttribute("aria-pressed", "false");
+      b.setAttribute("aria-label", label(key));
+      b.addEventListener("click", () => {
+        const on = !picked.has(key);
+        on ? picked.set(key, { time: "19:00", tbd: false, period: "evening", note: "", location: "", activities: "" }) : picked.delete(key);
+        b.setAttribute("aria-pressed", String(on));
+        renderRows(); update();
+      });
+      $("#days").append(b);
+    }
+    shown += n * 7;
+  }
+
+  function renderRows() {
+    $("#rowsCard").hidden = !picked.size;
+    $("#rows").replaceChildren(...[...picked.keys()].sort().map((key) => {
+      const v = picked.get(key), id = "r" + key;
+      const time = el("input", { type: "time", id: id + "t", value: v.time });
+      const tbd = el("input", { type: "checkbox", id: id + "b", checked: v.tbd });
+      const period = el("select", { id: id + "p", hidden: !v.tbd }, ...["morning", "afternoon", "evening"].map((p) => el("option", { value: p, textContent: p, selected: p === v.period })));
+      const sync = () => { time.disabled = tbd.checked; period.hidden = !tbd.checked; };
+      const set = (patch) => { Object.assign(v, patch); update(); };
+      time.addEventListener("input", () => set({ time: time.value }));
+      tbd.addEventListener("change", () => { sync(); set({ tbd: tbd.checked }); });
+      period.addEventListener("change", () => set({ period: period.value }));
+      const chip = (text, t) => el("button", { className: "btn ghost", type: "button", textContent: text, onclick: () => { time.value = t; tbd.checked = false; sync(); set({ time: t, tbd: false }); } });
+      const place = el("input", { type: "text", maxLength: 80, placeholder: "Where will you meet? e.g. Utrecht Centraal", value: v.location });
+      const acts = el("input", { type: "text", maxLength: 200, placeholder: "What could you do? e.g. Cinema, Dinner, A walk", value: v.activities });
+      const note = el("input", { type: "text", maxLength: 120, placeholder: "Note (optional)", value: v.note });
+      place.addEventListener("input", () => set({ location: place.value }));
+      note.addEventListener("input", () => set({ note: note.value }));
+      acts.addEventListener("input", () => set({ activities: acts.value }));
+      sync();
+      return el("div", { className: "row" }, el("h3", { textContent: label(key) }),
+        el("div", { className: "chips" }, chip("Morning 10:30", "10:30"), chip("Afternoon 15:00", "15:00"), chip("Evening 19:00", "19:00")),
+        el("div", { className: "inline" }, el("label", { htmlFor: id + "t", textContent: "Time" }), time,
+          el("label", {}, tbd, " Time to be decided"), period),
+        el("label", { className: "field", textContent: "Where?" }, place), el("label", { className: "field", textContent: "Activities (separate with commas)" }, acts), el("label", { className: "field", textContent: "Note" }, note));
+    }));
+  }
+
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone; // taken from the computer, never asked
+
+  function update() {
+    const r = ChooseTimes.buildOutput([...picked].map(([date, v]) => ({ date, ...v })),
+      { timezone });
+    $("#msg").textContent = r.error || "";
+    $("#out").value = r.json ? JSON.stringify(r.json, null, 2) : "";
+  }
+  $("#more").addEventListener("click", () => addWeeks(4));
+  $("#copy").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText($("#out").value); $("#msg").textContent = "Copied."; }
+    catch { $("#out").select(); $("#msg").textContent = "Select and copy the text above."; }
+  });
+  addWeeks(4); update();
+</script>
+</body>
+</html>

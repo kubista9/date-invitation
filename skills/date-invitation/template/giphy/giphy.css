@@ -1,0 +1,43 @@
+/* GIPHY picker, attribution and the "GIF unavailable" box. Uses the colour tokens from style.css. */
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* GIF + attribution */
+.gg-wrap{margin:0 auto}
+.gg-frame{margin:14px auto}
+.gg-embed{width:100%;height:100%;border:0;background:#000}
+.gg-attr-slot{min-height:3.1rem;margin-bottom:.9rem} /* reserved so attribution loading doesn't move the page */
+.gg-attr{font-size:.78rem;line-height:1.35;text-align:center}
+.gg-attr p{margin:0}
+.gg-attr a{color:var(--pink-d,#9c3659)}
+.gg-powered{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:2px!important;font-weight:600}
+.gg-powered img{display:block;width:133px;height:28px}
+
+/* picker */
+.gp{text-align:left}
+.gp h3{margin:0 0 .2em;font-size:1rem}
+.gp-hint{margin:0 0 .6em;font-size:.85rem;opacity:.8}
+.gp-current{margin-bottom:8px;text-align:center}
+.gp-dialog{border:0;border-radius:24px;padding:0;width:min(94vw,560px);max-height:90dvh;color:var(--plum,#4a2040);background:var(--card,#fff);box-shadow:0 20px 60px rgba(74,32,64,.35)}
+.gp-dialog::backdrop{background:rgba(74,32,64,.5)}
+.gp-inner{display:flex;flex-direction:column;max-height:90dvh}
+.gp-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px 0}
+.gp-head h2{margin:0;font-size:1.2rem}
+.gp-body{padding:12px 18px;overflow:auto;flex:1;min-height:340px}
+.gp-foot{padding:10px 18px 14px;border-top:1px solid var(--line,#f2c7d4)}
+.gp-search input{width:100%;font:inherit;color:inherit;border:1.5px solid var(--line,#f2c7d4);border-radius:999px;padding:.7em 1.1em;background:var(--cream,#fff8f1)}
+.gp-status{min-height:2.4em;margin:.6em 0;font-size:.9rem}
+.gp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.gp-tile{aspect-ratio:1;padding:0;border:2px solid transparent;border-radius:14px;overflow:hidden;background:var(--blush,#fde8ee);cursor:pointer}
+.gp-tile img{display:block;width:100%;height:100%;object-fit:cover}
+.gp-tile:hover{border-color:var(--pink,#b8456e)}
+.gp-tile.skel{cursor:default;animation:gp-pulse 1.2s ease-in-out infinite}
+.gp-tile:focus-visible,.gp-dialog input:focus-visible{outline:3px solid var(--plum,#4a2040);outline-offset:2px}
+.gp-preview{text-align:center}
+.gp-pic{max-width:320px}
+.gp-title{margin:.2em 0 .6em;font-weight:600}
+.gp-retry{padding:.3em 1em;min-height:36px}
+@keyframes gp-pulse{50%{opacity:.5}}
+
+/* shown instead of a GIF that can't be displayed */
+.gf-unavailable{width:100%;height:100%;display:grid;place-items:center;padding:16px;text-align:center;border:2px dashed var(--pink,#b8456e);border-radius:inherit;background:var(--cream,#fff8f1);color:var(--plum,#4a2040);font:600 .95rem/1.3 ui-rounded,system-ui,sans-serif}
+@media (prefers-reduced-motion:reduce){.gp-tile.skel{animation:none!important}}
